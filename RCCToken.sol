@@ -398,7 +398,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
     uint256 private totalGeneratableSupply;
     uint256 private startTime;
     uint256 private last_SupplyGeneratedTime;
-    uint256 private oneYear = 10;
+    uint256 private oneYear = 30;
     uint256 private commulativeGeneratedSupply;
     /**
      * @dev Sets the values for {name} and {symbol}.
@@ -409,16 +409,6 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
      * All two of these values are immutable: they can only be set once during
      * construction.
      */
-    function ownerZoneInfo() external view onlyOwner returns (uint256 pendingMintableSupply, uint256 oneYearMintLimit, uint256 totalSupplyCanBeMinted, uint256 last_mintedYearStartedsAt, uint256 secondsOfOneYear, uint256 commulativeMintedSupply){
-        pendingMintableSupply = pendingGeneratableSupply();
-        oneYearMintLimit = oneYearLimit;
-        totalSupplyCanBeMinted = totalGeneratableSupply;
-        last_mintedYearStartedsAt = last_SupplyGeneratedTime;
-        secondsOfOneYear = oneYear;
-        commulativeMintedSupply = commulativeGeneratedSupply;
-    }
-
-
     constructor(string memory name_, string memory symbol_, uint8 decimals_) {
         _name = name_;
         _symbol = symbol_;
@@ -486,6 +476,22 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
         return _balances[account];
     }
 
+    function ownerZoneInfo() external view onlyOwner returns (uint256 pendingMintableSupply, uint256 oneYearMintLimit, uint256 totalSupplyCanBeMinted, uint256 last_mintedYearStartedsAt, uint256 secondsOfOneYear, uint256 commulativeMintedSupply){
+        pendingMintableSupply = pendingGeneratableSupply();
+        oneYearMintLimit = oneYearLimit;
+        totalSupplyCanBeMinted = totalGeneratableSupply;
+        last_mintedYearStartedsAt = last_SupplyGeneratedTime;
+        secondsOfOneYear = oneYear;
+        commulativeMintedSupply = commulativeGeneratedSupply;
+    }
+
+    
+
+    // function to see fee percent which will be deducted and transferred to the owner account on each transaction.
+    function feePercentOnTransfer() public view returns (uint256) {
+        return _feeOnTransfer;
+    }
+
 
     // Owner will use this function to generate new supply.
     function mint(uint256 _amount) external onlyOwner returns(bool) {
@@ -528,7 +534,11 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
         generatable = _totalGeneratableUptillNow - commulativeGeneratedSupply;
     }
 
-
+    // function to set fee on transfer.
+    // only Owner is authorized.
+    function setTrasferFeePercent(uint256 _fee) external onlyOwner {
+        _feeOnTransfer = _fee;
+    }
     /**
      * @dev See {IERC20-transfer}.
      *
