@@ -398,7 +398,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
     uint256 private totalGeneratableSupply;
     uint256 private startTime;
     uint256 private last_SupplyGeneratedTime;
-    uint256 private oneYear = 30;
+    uint256 private oneYear = 365 days;
     uint256 private commulativeGeneratedSupply;
     /**
      * @dev Sets the values for {name} and {symbol}.
@@ -476,7 +476,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
         return _balances[account];
     }
 
-    function ownerZoneInfo() external view onlyOwner returns (uint256 pendingMintableSupply, uint256 oneYearMintLimit, uint256 totalSupplyCanBeMinted, uint256 last_mintedYearStartedsAt, uint256 secondsOfOneYear, uint256 commulativeMintedSupply){
+    function ownerZoneInfo() external view returns (uint256 pendingMintableSupply, uint256 oneYearMintLimit, uint256 totalSupplyCanBeMinted, uint256 last_mintedYearStartedsAt, uint256 secondsOfOneYear, uint256 commulativeMintedSupply){
         pendingMintableSupply = pendingGeneratableSupply();
         oneYearMintLimit = oneYearLimit;
         totalSupplyCanBeMinted = totalGeneratableSupply;
